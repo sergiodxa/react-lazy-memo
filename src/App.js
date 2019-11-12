@@ -1,10 +1,15 @@
-import React, { Component, Suspense, lazy, memo } from "react";
+import React, { Component, Suspense, lazy, memo, Fragment } from "react";
 import "./App.css";
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const Logo = lazy(async () => {
   await sleep(1000);
+  return import("./logo.js");
+});
+
+const LargeLogo = lazy(async () => {
+  await sleep(3000);
   return import("./logo.js");
 });
 
@@ -21,9 +26,15 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <input type="text" />
         <header className="App-header">
           <Suspense maxDuration={300} fallback={<Placeholder />}>
-            <Logo alt={this.state.alt} />
+            <Fragment>
+              <Logo alt={this.state.alt} />
+              <Suspense maxDuration={1500} fallback={<Placeholder />}>
+                <LargeLogo alt={this.state.alt} />
+              </Suspense>
+            </Fragment>
           </Suspense>
         </header>
       </div>
